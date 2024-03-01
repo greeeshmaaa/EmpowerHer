@@ -25,22 +25,25 @@ public class SignUp extends AppCompatActivity {
     EditText editTextPhone;
     EditText editTextPassword;
 
+    SessionManager sessionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        // Initialize EditTexts
         editTextName = findViewById(R.id.editTextName);
         editTextEmailAddress = findViewById(R.id.editTextEmailAddress);
         editTextPhone = findViewById(R.id.editTextPhone);
         editTextPassword = findViewById(R.id.editTextPassword);
 
+        sessionManager = new SessionManager(this);
+
         TextView textViewSignUp = findViewById(R.id.textViewSignUp);
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signUp(); // Call signUp method when textViewSignUp is clicked
+                signUp();
             }
         });
     }
@@ -49,19 +52,19 @@ public class SignUp extends AppCompatActivity {
         String name = editTextName.getText().toString().trim();
         String phoneNumber = editTextPhone.getText().toString().trim();
         String email = editTextEmailAddress.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim(); // Get password input
+        String password = editTextPassword.getText().toString().trim();
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name", name);
             jsonObject.put("phone_number", phoneNumber);
             jsonObject.put("email", email);
-            jsonObject.put("password", password); // Include password in JSONObject
+            jsonObject.put("password", password);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        String url = "http://10.0.2.2:3000/api/signup"; // Replace with your server URL
+        String url = "http://10.0.2.2:3000/api/signup"; // Changed the port to match your Node.js server
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 new Response.Listener<JSONObject>() {
@@ -71,8 +74,10 @@ public class SignUp extends AppCompatActivity {
                             String message = response.getString("message");
                             Toast.makeText(SignUp.this, message, Toast.LENGTH_SHORT).show();
 
-                            // If the registration is successful, navigate to the login page
                             if (message.equals("User registered successfully")) {
+                                String sessionToken = response.getString("sessionToken");
+                                sessionManager.saveSessionToken(sessionToken);
+
                                 Intent intent = new Intent(SignUp.this, LogIn.class);
                                 startActivity(intent);
                             }
@@ -81,7 +86,6 @@ public class SignUp extends AppCompatActivity {
                             Toast.makeText(SignUp.this, "Error parsing response", Toast.LENGTH_SHORT).show();
                         }
                     }
-
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -89,7 +93,6 @@ public class SignUp extends AppCompatActivity {
             }
         });
 
-        // Add the request to the RequestQueue.
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);
     }

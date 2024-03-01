@@ -1,4 +1,3 @@
-// LogIn.java
 package com.example.empowerher;
 
 import android.content.Intent;
@@ -8,12 +7,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,10 +23,14 @@ public class LogIn extends AppCompatActivity {
     EditText editTextEmail2;
     EditText editTextPasswordLogin;
 
+    SessionManager sessionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+
+        sessionManager = new SessionManager(this);
 
         editTextEmail2 = findViewById(R.id.editTextEmail2);
         editTextPasswordLogin = findViewById(R.id.editTextPasswordlogin);
@@ -51,7 +56,7 @@ public class LogIn extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://10.0.2.2:3000/api/login"; // Replace with your server URL
+        String url = "http://10.0.2.2:3000/api/login"; // Changed the port to match your Node.js server
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 new Response.Listener<JSONObject>() {
@@ -61,11 +66,15 @@ public class LogIn extends AppCompatActivity {
                             String message = response.getString("message");
                             Toast.makeText(LogIn.this, message, Toast.LENGTH_SHORT).show();
 
-                            // If login is successful, navigate to the home page
                             if (message.equals("Login successful")) {
+                                String sessionToken = response.getString("sessionToken");
+                                String userName = response.getString("userName");
+                                sessionManager.saveSessionToken(sessionToken);
+                                sessionManager.saveUserName(userName);
+
                                 Intent intent = new Intent(LogIn.this, Home.class);
                                 startActivity(intent);
-                                finish(); // Close login activity
+                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
