@@ -1,6 +1,9 @@
 package com.example.empowerher;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,5 +26,14 @@ public class Home extends AppCompatActivity {
         } else {
             textViewWelcome.setText("Welcome!");
         }
+
+        Button emergencyContactButton = findViewById(R.id.emergencycontactButton);
+        emergencyContactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Redirect to EmergencyContactActivity
+                startActivity(new Intent(Home.this, Emergency_contact.class));
+            }
+        });
     }
 }

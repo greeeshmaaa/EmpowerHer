@@ -16,6 +16,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Emergency_contact"
+            android:exported="false" />
+        <activity
             android:name=".Home"
             android:exported="false" />
         <activity

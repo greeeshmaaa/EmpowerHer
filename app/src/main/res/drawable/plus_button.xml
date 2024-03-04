@@ -1,0 +1,11 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background Circle -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#D4B9FE" /> <!-- Change color as needed -->
+        </shape>
+    </item>
+    <!-- Plus Sign -->
+    <item android:drawable="@drawable/ic_plus"
+        android:gravity="center" />
+</layer-list>
