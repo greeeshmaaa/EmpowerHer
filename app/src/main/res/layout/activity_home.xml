@@ -8,16 +8,99 @@
 
     <TextView
         android:id="@+id/textViewWelcome"
-        android:layout_width="190dp"
-        android:layout_height="105dp"
+        android:layout_width="221dp"
+        android:layout_height="54dp"
         android:layout_centerInParent="true"
         android:text="Welcome!"
         android:textColor="#D8BFD8"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.084"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.059" />
+
+    <Button
+        android:id="@+id/sosButton"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:textColor="#000000"
+        android:background="@drawable/sos_button_background"
+        android:text="SOS"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.141"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.253"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/helplineButton"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:textColor="#000000"
+        android:background="@drawable/helpline_button_background"
+        android:text="Helpline"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.869"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.253"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/emergencycontactButton"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:textColor="#000000"
+        android:background="@drawable/emergencycontact_button_background"
+        android:text="Emergency Contact"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.53"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/trackmeButton"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:textColor="#000000"
+        android:background="@drawable/trackme_button_background"
+        android:text="Track Me"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.65"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/historyButton"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:textColor="#000000"
+        android:background="@drawable/history_button_background"
+        android:text="History"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.776"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
