@@ -8,7 +8,8 @@ import android.os.Handler;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int SPLASH_DURATION = 5000;
+    private static final 
+    int SPLASH_DURATION = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

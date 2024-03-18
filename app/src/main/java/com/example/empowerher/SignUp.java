@@ -17,6 +17,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Map;
 
 public class SignUp extends AppCompatActivity {
 
@@ -40,12 +41,7 @@ public class SignUp extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         TextView textViewSignUp = findViewById(R.id.textViewSignUp);
-        textViewSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signUp();
-            }
-        });
+        textViewSignUp.setOnClickListener(v -> signUp());
     }
 
     private void signUp() {
@@ -64,34 +60,34 @@ public class SignUp extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://10.0.2.2:3000/api/signup"; // Changed the port to match your Node.js server
+        String url = "http://10.0.2.2:3000/api/signup";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            String message = response.getString("message");
-                            Toast.makeText(SignUp.this, message, Toast.LENGTH_SHORT).show();
+                response -> {
+                    try {
+                        String message = response.getString("message");
+                        Toast.makeText(SignUp.this, message, Toast.LENGTH_SHORT).show();
 
-                            if (message.equals("User registered successfully")) {
-                                String sessionToken = response.getString("sessionToken");
-                                sessionManager.saveSessionToken(sessionToken);
-
-                                Intent intent = new Intent(SignUp.this, LogIn.class);
-                                startActivity(intent);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(SignUp.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                        if (message.equals("User registered successfully")) {
+                            Intent intent = new Intent(SignUp.this, LogIn.class);
+                            startActivity(intent);
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(SignUp.this, "Error parsing response", Toast.LENGTH_SHORT).show();
                     }
-                }, new Response.ErrorListener() {
+                }, error -> Toast.makeText(SignUp.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show()) {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(SignUp.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            protected Response<JSONObject> parseNetworkResponse(com.android.volley.NetworkResponse response) {
+                // Capture the cookies from headers
+                Map<String, String> responseHeaders = response.headers;
+                String rawCookies = responseHeaders.get("Set-Cookie");
+                if (rawCookies != null) {
+                    sessionManager.saveSessionCookie(rawCookies.split(";", 2)[0]);
+                }
+                return super.parseNetworkResponse(response);
             }
-        });
+        };
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);

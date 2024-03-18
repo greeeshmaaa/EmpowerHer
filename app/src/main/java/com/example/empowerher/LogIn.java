@@ -18,6 +18,9 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LogIn extends AppCompatActivity {
 
     EditText editTextEmail2;
@@ -36,12 +39,7 @@ public class LogIn extends AppCompatActivity {
         editTextPasswordLogin = findViewById(R.id.editTextPasswordlogin);
 
         TextView textViewLogIn = findViewById(R.id.textViewLogIn);
-        textViewLogIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
+        textViewLogIn.setOnClickListener(v -> login());
     }
 
     private void login() {
@@ -56,37 +54,39 @@ public class LogIn extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://10.0.2.2:3000/api/login"; // Changed the port to match your Node.js server
+        String url = "http://10.0.2.2:3000/api/login"; // Ensure this matches your server's actual URL.
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            String message = response.getString("message");
-                            Toast.makeText(LogIn.this, message, Toast.LENGTH_SHORT).show();
+                response -> {
+                    try {
+                        String message = response.getString("message");
+                        Toast.makeText(LogIn.this, message, Toast.LENGTH_SHORT).show();
 
-                            if (message.equals("Login successful")) {
-                                String sessionToken = response.getString("sessionToken");
-                                String userName = response.getString("userName");
-                                sessionManager.saveSessionToken(sessionToken);
-                                sessionManager.saveUserName(userName);
+                        if (message.equals("Login successful")) {
+                            String userName = response.getString("userName");
+                            sessionManager.saveUserName(userName);
 
-                                Intent intent = new Intent(LogIn.this, Home.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(LogIn.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                            // Navigate to the Home Activity
+                            Intent intent = new Intent(LogIn.this, Home.class);
+                            startActivity(intent);
+                            finish();
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(LogIn.this, "Error parsing response", Toast.LENGTH_SHORT).show();
                     }
-                }, new Response.ErrorListener() {
+                }, error -> Toast.makeText(LogIn.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show()) {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(LogIn.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            protected Response<JSONObject> parseNetworkResponse(com.android.volley.NetworkResponse response) {
+                // Capture the cookies from headers
+                Map<String, String> responseHeaders = response.headers;
+                String rawCookies = responseHeaders.get("Set-Cookie");
+                if (rawCookies != null) {
+                    sessionManager.saveSessionCookie(rawCookies.split(";", 2)[0]);
+                }
+                return super.parseNetworkResponse(response);
             }
-        });
+        };
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);
