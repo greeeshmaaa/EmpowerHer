@@ -20,7 +20,10 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.android.volley.toolbox.JsonObjectRequest;
 
+
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +39,7 @@ public class Emergency_contact extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         Button addFriendButton = findViewById(R.id.addFriendButton);
         Button viewPendingRequestsButton = findViewById(R.id.button);
-
+        fetchFriends(); // Fetch and display friends
         addFriendButton.setOnClickListener(view -> showAddFriendDialog());
         viewPendingRequestsButton.setOnClickListener(this::fetchPendingFriendRequests);
     }
@@ -66,22 +69,36 @@ public class Emergency_contact extends AppCompatActivity {
 
     private void sendFriendRequest(String receiverEmail) {
         String url = "http://10.0.2.2:3000/api/friend-request";
-        Map<String, String> params = new HashMap<>();
-        params.put("receiver_email", receiverEmail);
+        JSONObject params = new JSONObject();
+        try {
+            params.put("receiver_email", receiverEmail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+        JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, params,
                 response -> Toast.makeText(this, "Friend request sent.", Toast.LENGTH_SHORT).show(),
-                error -> Toast.makeText(this, "Failed to send friend request.", Toast.LENGTH_SHORT).show()) {
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-
+                error -> {
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        // Attempt to parse the error body if it exists
+                        try {
+                            String responseBody = new String(error.networkResponse.data, "utf-8");
+                            JSONObject errorData = new JSONObject(responseBody);
+                            String errorMessage = errorData.optString("message", "Unknown error");
+                            Toast.makeText(this, "Failed to send friend request: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        } catch (UnsupportedEncodingException | JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        // Fallback error message
+                        Toast.makeText(this, "Failed to send friend request.", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();
                 String cookie = sessionManager.getSessionCookie();
-                if (cookie != null) {
+                if (cookie != null && !cookie.isEmpty()) {
                     headers.put("Cookie", cookie);
                 }
                 return headers;
@@ -89,6 +106,7 @@ public class Emergency_contact extends AppCompatActivity {
         };
         Volley.newRequestQueue(this).add(postRequest);
     }
+
 
     private void fetchPendingFriendRequests(View view) {
         String url = "http://10.0.2.2:3000/api/friend-requests/received";
@@ -171,4 +189,47 @@ public class Emergency_contact extends AppCompatActivity {
         };
         Volley.newRequestQueue(this).add(postRequest);
     }
+
+    private void fetchFriends() {
+        String url = "http://10.0.2.2:3000/api/friends";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONArray friends = new JSONArray(response);
+                        displayFriends(friends);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing friends list", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Error fetching friends list", Toast.LENGTH_SHORT).show()) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                String cookie = sessionManager.getSessionCookie();
+                if (cookie != null && !cookie.isEmpty()) {
+                    headers.put("Cookie", cookie);
+                }
+                return headers;
+            }
+        };
+
+        Volley.newRequestQueue(this).add(stringRequest);
+    }
+    private void displayFriends(JSONArray friends) throws JSONException {
+        LinearLayout friendsContainer = findViewById(R.id.llFriendsContainer); // Assuming you have a LinearLayout to display friends
+        friendsContainer.removeAllViews(); // Clear previous views
+
+        for (int i = 0; i < friends.length(); i++) {
+            JSONObject friend = friends.getJSONObject(i);
+            String name = friend.getString("name");
+            String email = friend.getString("email");
+
+            TextView friendView = new TextView(this);
+            friendView.setText(String.format("%s (%s)", name, email));
+            friendsContainer.addView(friendView);
+        }
+    }
+
 }
