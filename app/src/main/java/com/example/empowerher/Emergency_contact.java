@@ -68,7 +68,7 @@ public class Emergency_contact extends AppCompatActivity {
     }
 
     private void sendFriendRequest(String receiverEmail) {
-        String url = "http://10.0.2.2:3000/api/friend-request";
+        String url = "http://ec2-13-126-93-228.ap-south-1.compute.amazonaws.com:3000/api/friend-request";
         JSONObject params = new JSONObject();
         try {
             params.put("receiver_email", receiverEmail);
@@ -109,7 +109,7 @@ public class Emergency_contact extends AppCompatActivity {
 
 
     private void fetchPendingFriendRequests(View view) {
-        String url = "http://10.0.2.2:3000/api/friend-requests/received";
+        String url = "http://ec2-13-126-93-228.ap-south-1.compute.amazonaws.com:3000/api/friend-requests/received";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 this::processPendingFriendRequestsResponse,
@@ -169,7 +169,7 @@ public class Emergency_contact extends AppCompatActivity {
     }
 
     private void acceptFriendRequest(String requestId, View requestView, LinearLayout container) {
-        String url = "http://10.0.2.2:3000/api/friend-requests/accept/" + requestId;
+        String url = "http://ec2-13-126-93-228.ap-south-1.compute.amazonaws.com:3000/api/friend-requests/accept/" + requestId;
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
@@ -191,7 +191,7 @@ public class Emergency_contact extends AppCompatActivity {
     }
 
     private void fetchFriends() {
-        String url = "http://10.0.2.2:3000/api/friends";
+        String url = "http://ec2-13-126-93-228.ap-south-1.compute.amazonaws.com:3000/api/friends";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {

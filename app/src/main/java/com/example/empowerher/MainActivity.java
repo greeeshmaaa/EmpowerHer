@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(MainActivity.this, SignUp.class);
+                Intent intent = new Intent(MainActivity.this, start.class);
                 startActivity(intent);
                 finish(); // Close the splash activity to prevent going back to it
             }

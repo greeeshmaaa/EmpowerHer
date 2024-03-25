@@ -60,7 +60,7 @@ public class SignUp extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://10.0.2.2:3000/api/signup";
+        String url = "http://ec2-13-126-93-228.ap-south-1.compute.amazonaws.com:3000/api/signup";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 response -> {

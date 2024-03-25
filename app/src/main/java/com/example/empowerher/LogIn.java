@@ -54,7 +54,7 @@ public class LogIn extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://10.0.2.2:3000/api/login"; // Ensure this matches your server's actual URL.
+        String url = "http://ec2-13-126-93-228.ap-south-1.compute.amazonaws.com:3000/api/login"; // Ensure this matches your server's actual URL.
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 response -> {
