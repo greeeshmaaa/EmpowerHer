@@ -15,15 +15,14 @@
         android:theme="@style/Theme.EmpowerHer"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".ViewAlerts"
-            android:exported="false" />
+
         <activity
             android:name=".Emergency_contact"
             android:exported="false" />
         <activity
             android:name=".Home"
             android:exported="false" />
+
         <activity
             android:name=".LogIn"
             android:exported="true">
@@ -33,6 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".SignUp"
             android:exported="true">
