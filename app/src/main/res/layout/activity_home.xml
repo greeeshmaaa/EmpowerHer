@@ -85,12 +85,12 @@
         app:layout_constraintVertical_chainStyle="packed"/>
 
     <Button
-        android:id="@+id/historyButton"
+        android:id="@+id/alertsButton"
         android:layout_width="350dp"
         android:layout_height="50dp"
         android:textColor="#000000"
         android:background="@drawable/history_button_background"
-        android:text="History"
+        android:text="View Alerts"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -35,5 +35,16 @@ public class Home extends AppCompatActivity {
                 startActivity(new Intent(Home.this, Emergency_contact.class));
             }
         });
+
+        Button alertsButton = findViewById(R.id.alertsButton);
+        alertsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Redirect to AlertsActivity
+                startActivity(new Intent(Home.this, ViewAlerts.class));
+            }
+        });
+
+
     }
 }
