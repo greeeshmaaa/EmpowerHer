@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">EmpowerHer</string>
+    <string name="failed_to_parse_alerts">Failed to parse alerts.</string>
+
 </resources>

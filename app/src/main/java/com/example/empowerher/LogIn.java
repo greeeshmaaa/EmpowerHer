@@ -78,15 +78,15 @@ public class LogIn extends AppCompatActivity {
                 }, error -> Toast.makeText(LogIn.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show()) {
             @Override
             protected Response<JSONObject> parseNetworkResponse(com.android.volley.NetworkResponse response) {
-                // Capture the cookies from headers
                 Map<String, String> responseHeaders = response.headers;
                 String rawCookies = responseHeaders.get("Set-Cookie");
-                if (rawCookies != null) {
+                if (rawCookies != null && !rawCookies.isEmpty()) {
                     sessionManager.saveSessionCookie(rawCookies.split(";", 2)[0]);
                 }
                 return super.parseNetworkResponse(response);
             }
         };
+
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);
