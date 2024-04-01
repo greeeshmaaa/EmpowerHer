@@ -3,8 +3,7 @@ package com.example.empowerher;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.ListView;
-import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.AuthFailureError;
@@ -13,7 +12,6 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
@@ -29,9 +27,8 @@ import java.util.Map;
 
 public class ViewAlerts extends AppCompatActivity {
 
-    private ListView alertsListView;
-    private ArrayList<String> alertsList;
-    private ArrayAdapter<String> adapter;
+    private TextView alertsTextView; // Changed to TextView
+    private ArrayList<String> alertsList; // Retained for potential future use
     private SessionManager sessionManager;
 
     @Override
@@ -40,13 +37,11 @@ public class ViewAlerts extends AppCompatActivity {
         setContentView(R.layout.activity_view_alerts);
 
         sessionManager = new SessionManager(this);
-        alertsListView = findViewById(R.id.alertsListView);
+        alertsTextView = findViewById(R.id.alertsListView); // Changed to reference a TextView
+
         alertsList = new ArrayList<>();
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, alertsList);
-        alertsListView.setAdapter(adapter);
-
-        // Check if user is logged in (session cookie is present)
+        // Check if user is logged in
         if (!sessionManager.isLoggedIn()) {
             redirectToLogin();
         } else {
@@ -78,12 +73,13 @@ public class ViewAlerts extends AppCompatActivity {
     private void onAlertsReceived(String response) {
         try {
             JSONArray jsonArray = new JSONArray(response);
+            StringBuilder alertsBuilder = new StringBuilder(); // Use StringBuilder to accumulate alerts
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String alertMessage = jsonObject.getString("friendName") + " needs your help.";
-                alertsList.add(alertMessage);
+                String alertMessage = jsonObject.getString("friendName") + "'s Live Location\n"; // Add newline for separation
+                alertsBuilder.append(alertMessage);
             }
-            adapter.notifyDataSetChanged();
+            alertsTextView.setText(alertsBuilder.toString()); // Set text directly to TextView
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(ViewAlerts.this, "Error parsing alerts", Toast.LENGTH_SHORT).show();
@@ -112,7 +108,7 @@ public class ViewAlerts extends AppCompatActivity {
     }
 
     private void redirectToLogin() {
-        Intent intent = new Intent(ViewAlerts.this, LogIn.class); // Replace LoginActivity with your login activity class
+        Intent intent = new Intent(ViewAlerts.this, LogIn.class); // Replace LogIn with your login activity class
         startActivity(intent);
         finish();
     }
